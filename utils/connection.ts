@@ -1,3 +1,6 @@
 import postgres from "postgres";
 
-export const sql = postgres(process.env.ACCESS_TOKEN);
+console.log({sql: process.env.ACCESS_TOKEN})
+
+const sql = postgres(process.env.ACCESS_TOKEN);
+export default sql

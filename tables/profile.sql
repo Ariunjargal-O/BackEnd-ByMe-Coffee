@@ -1,5 +1,5 @@
 create table
-    profile (
+   " profile" (
         id serial primary key,
         name varchar(100) not null,
         about varchar(100) not null,
@@ -7,7 +7,21 @@ create table
         socialMediaURL varchar(100) not null,
         backgroundImage varchar(100) not null,
         successMessage varchar(100) not null,
-        userId serial not null,
+        userId integer "users"(id),
         createdAt timestamp default current_timestamp,
         updatedAt timestamp default current_timestamp
     )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
