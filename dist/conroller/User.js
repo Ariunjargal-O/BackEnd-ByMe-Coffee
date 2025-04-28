@@ -12,11 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginUser = exports.createUser = void 0;
+exports.getUser = exports.loginUser = exports.createUser = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const connection_1 = __importDefault(require("../utils/connection"));
-console.log(connection_1.default);
 // id serial primary key,
 // email varchar(100) not null unique,
 // password varchar(100) not null,
@@ -28,8 +27,8 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         const { username, password, receivedDonation, email } = req.body;
         console.log(username, password);
-        const createdUser = yield (0, connection_1.default) ` insert into user (username, password,id, email,receivedDonation,) values (${username},${password},${email},${receivedDonation},)
-    returning*`;
+        const createdUser = yield (0, connection_1.default) `     insert into "user" (username, password, email,receivedDonation ) values (${username}, ${email},${password}, ${receivedDonation})
+    returning *;`;
         res.status(201).json({ success: true, message: createdUser });
     }
     catch (error) {
@@ -39,4 +38,10 @@ exports.createUser = createUser;
 const loginUser = () => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.loginUser = loginUser;
+const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const users = yield (0, connection_1.default) `select * from "bankCard"`;
+    console.log({ users });
+    res.json(users);
+});
+exports.getUser = getUser;
 //# sourceMappingURL=User.js.map

@@ -7,5 +7,5 @@ exports.userRouter = void 0;
 const express_1 = __importDefault(require("express"));
 const User_1 = require("../conroller/User");
 exports.userRouter = express_1.default.Router();
-exports.userRouter.post("/sign-up", User_1.createUser);
+exports.userRouter.post("/sign-up", User_1.createUser).get("/", User_1.getUser);
 //# sourceMappingURL=User.js.map

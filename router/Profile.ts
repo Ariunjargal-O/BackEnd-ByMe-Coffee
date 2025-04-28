@@ -1,7 +1,22 @@
 import express from "express";
-import { createProfile } from "../conroller/Profile";
+import {
+  createProfile,
+  getAllProfile,
+  getUsername,
+  patchProfile,
+  postProfileUserId,
+} from "../conroller/Profile";
 
-
-export const profileRouter = express.Router()
+export const profileRouter = express.Router();
 profileRouter
-.post("/post",createProfile)
+  .post("/create-pro/:userId", postProfileUserId)
+  .patch("/:profileId", patchProfile)
+  .get("/view/:username", getUsername) //ok
+  .post("/", createProfile) //hrggui
+  .get("/", getAllProfile) //ok
+
+
+//   .get("/current-user", )
+//   .get("/explore", );
+
+

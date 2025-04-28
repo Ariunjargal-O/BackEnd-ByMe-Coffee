@@ -6,19 +6,20 @@ import express from "express";
 import { Request, Response } from "express";
 import { profileRouter } from "../router/Profile";
 import { userRouter } from "../router/User";
-
 import postgres from "postgres";
-import { bankCardRouter } from "../router/BankAccount";
+import { bankCardRouter } from "../router/BankCard";
 import { donationRouter } from "../router/Donation";
-
+import cors from "cors";
 
 const app = express();
 const port = 8000;
 app.use(express.json());
+app.use(cors())
+
 
 app.use("/users", userRouter);
 app.use("/donations", donationRouter);
-app.use("/bankCards", bankCardRouter);
+app.use("/bank-cards", bankCardRouter);
 app.use("/profiles", profileRouter);
 
 app.get("/", (_req: Request, res: Response) => {

@@ -7,7 +7,7 @@ create table
         socialMediaURL varchar(100) not null,
         backgroundImage varchar(100) not null,
         successMessage varchar(100) not null,
-        userId integer "users"(id),
+        userId integer "user"(id),
         createdAt timestamp default current_timestamp,
         updatedAt timestamp default current_timestamp
     )
