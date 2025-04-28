@@ -6,17 +6,18 @@ import {
   patchProfile,
   postProfileUserId,
 } from "../conroller/Profile";
+import {
+  checkProfileId,
+  checkUserId,
+  checkUsername,
+} from "../middleware/Checking";
 
 export const profileRouter = express.Router();
 profileRouter
-  .post("/create-pro/:userId", postProfileUserId)
-  .patch("/:profileId", patchProfile)
-  .get("/view/:username", getUsername) //ok
-  .post("/", createProfile) //hrggui
+  .post("/create-pro/:userId", checkUserId, postProfileUserId)
+  .patch("/update/:profileId", checkProfileId, patchProfile)
+  .get("/view/:username", checkUsername, getUsername) //ok
+  .post("/create-pro", createProfile) //hrggui
   .get("/", getAllProfile) //ok
-
-
-//   .get("/current-user", )
-//   .get("/explore", );
-
-
+  .get("/current-user", getAllProfile)
+  .get("/explore", getAllProfile);

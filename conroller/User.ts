@@ -9,26 +9,11 @@ import sql from "../utils/connection";
 // updatedAt timestamp default current_timestamp
 
 
-export const checkUsername: RequestHandler = async (req: Request, res: Response) => {
-  try {
-    const { username } = req.body;
-    const existingUser = await sql`
-      select * from users where username = ${username};
-    `;
-    if (existingUser.length > 0) {
-      res.json({ exists: true });
-    } 
-  } catch (error) {
-    console.error("Error checking username:", error);
-    res.status(500).json({ success: false, message: "Server Error" });
-  }
-}
+
 
 export const createUser: RequestHandler = async (req, res) => {
   try {
     const { username, password, email } = req.body;
-
-
     const createdUser = await sql`
          INSERT INTO "user" (username, password, email) 
          VALUES (${username}, ${password}, ${email})
@@ -39,12 +24,30 @@ export const createUser: RequestHandler = async (req, res) => {
       message: createdUser,
     });
   } catch (error) {
-    console.error("Error creating user:", error);
+    // console.error("Error creating user:", error);
     res.status(500).json({
       success: false,
       message: "Failed to create user",
       error: error.message,
     });
+  }
+};
+
+export const checkUsernameCheck: RequestHandler = async (
+  req: Request,
+  res: Response,
+) => {
+  try {
+    const { username } = req.body;
+    const [existingUser] = await sql`
+          select * from "user" where username = ${username};
+        `;
+
+    res.json({exists: !!existingUser})
+   
+  } catch (error) {
+    console.error("Error checking username:", error);
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
 
@@ -77,11 +80,10 @@ export const getAllUser = async (req: Request, res: Response) => {
 export const patchUserUserId = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const { username, password, email, receivedDonation } = req.body;
+    const { username, password, email } = req.body;
   
     const updateUser =
-      await sql`update "user" set username = ${username}, password = ${password}, email = ${email}, receivedDonation = ${receivedDonation} where id = ${userId}
-    returning *`;
+      await sql`insert into "user" (username, password, email) values (${username}, ${password}, ${email}) `
     res.status(200).json({ success: true, message: updateUser });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

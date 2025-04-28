@@ -18,14 +18,16 @@ const express_1 = __importDefault(require("express"));
 const Profile_1 = require("../router/Profile");
 const User_1 = require("../router/User");
 const postgres_1 = __importDefault(require("postgres"));
-const BankAccount_1 = require("../router/BankAccount");
+const BankCard_1 = require("../router/BankCard");
 const Donation_1 = require("../router/Donation");
+const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 const port = 8000;
+app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use("/users", User_1.userRouter);
 app.use("/donations", Donation_1.donationRouter);
-app.use("/bankCards", BankAccount_1.bankCardRouter);
+app.use("/bank-cards", BankCard_1.bankCardRouter);
 app.use("/profiles", Profile_1.profileRouter);
 app.get("/", (_req, res) => {
     res.status(200).json({ sucsecc: true, message: "Welcome to ByMe-Coffee" });

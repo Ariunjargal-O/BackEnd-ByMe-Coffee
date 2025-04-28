@@ -12,9 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUser = exports.loginUser = exports.createUser = void 0;
-const dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config();
+exports.patchUserUserId = exports.getAllUser = exports.loginUser = exports.createUser = void 0;
 const connection_1 = __importDefault(require("../utils/connection"));
 // id serial primary key,
 // email varchar(100) not null unique,
@@ -25,23 +23,75 @@ const connection_1 = __importDefault(require("../utils/connection"));
 // updatedAt timestamp default current_timestamp
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { username, password, receivedDonation, email } = req.body;
-        console.log(username, password);
-        const createdUser = yield (0, connection_1.default) `     insert into "user" (username, password, email,receivedDonation ) values (${username}, ${email},${password}, ${receivedDonation})
-    returning *;`;
-        res.status(201).json({ success: true, message: createdUser });
+        const { username, password, email } = req.body;
+        const createdUser = yield (0, connection_1.default) `
+         INSERT INTO "user" (username, password, email) 
+         VALUES (${username}, ${password}, ${email})
+         RETURNING *`;
+        res.status(201).json({
+            success: true,
+            message: createdUser,
+        });
     }
     catch (error) {
+        // console.error("Error creating user:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to create user",
+            error: error.message,
+        });
     }
 });
 exports.createUser = createUser;
-const loginUser = () => __awaiter(void 0, void 0, void 0, function* () {
+const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { email, password } = req.body;
+        const user = yield (0, connection_1.default) `select * from "user" where email = ${email} and password = ${password}
+    returning *`;
+        res.status(200).json({ success: true, message: user });
+    }
+    catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
 });
 exports.loginUser = loginUser;
-const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield (0, connection_1.default) `select * from "bankCard"`;
-    console.log({ users });
-    res.json(users);
+const getAllUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const users = yield (0, connection_1.default) `select * from "user"`;
+        res.status(200).json({ success: true, message: users });
+    }
+    catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
 });
-exports.getUser = getUser;
+exports.getAllUser = getAllUser;
+const patchUserUserId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userId } = req.params;
+        const { username, password, email, receivedDonation } = req.body;
+        const updateUser = yield (0, connection_1.default) `update "user" set username = ${username}, password = ${password}, email = ${email}, receivedDonation = ${receivedDonation} where id = ${userId}
+    returning *`;
+        res.status(200).json({ success: true, message: updateUser });
+    }
+    catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+exports.patchUserUserId = patchUserUserId;
+// export const patchUserUserId = async (req: Request, res: Response) => {
+//   try {
+//     const { userId } = req.params;
+//     const { username, password, email} = req.body;
+//     const userExists = await sql`select * from "user" where "userId = ${userId}`
+//     if(userExists.length === 0) {
+//       return res.status(404).json({success:false, message:"User not found"})
+//     }
+//     const updateUser =
+//       await sql`insert into "user" where userId = ${userId}update "user" set username = ${username}, password = ${password}, email = ${email}, where id = ${userId}
+//     returning *`;
+//     res.status(200).json({ success: true, message: updateUser });
+//   } catch (error) {
+//     res.status(500).json({ success: false, message: error.message });
+//   }
+// };
 //# sourceMappingURL=User.js.map

@@ -29,7 +29,7 @@ export const getBankCardUserId = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const bankCard = await sql`select * from "bankCard" where userId = ${userId}
-            returning *`;
+            `;
     res.status(200).json({ success: true, message: bankCard });
   } catch (error) {
     res.status(201).json({ success: false, message: error.message });

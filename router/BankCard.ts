@@ -5,11 +5,12 @@ import {
   postBankCard,
   postBankCardUserId,
 } from "../conroller/BankCard";
+import { checkBankCardId, checkUserId } from "../middleware/Checking";
 
 
 
 export const bankCardRouter = express.Router();
 bankCardRouter
-  .post("/:userId", postBankCardUserId)
-  .get("/:userId", getBankCardUserId)
-  .patch("/:bankCardId", patchBankCard);
+  .post("/create/:userId", checkUserId, postBankCardUserId)
+  .get("/:userId", checkUserId, getBankCardUserId)
+  .patch("/:bankCardId", checkBankCardId, patchBankCard);

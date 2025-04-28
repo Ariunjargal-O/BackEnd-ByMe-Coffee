@@ -1,12 +1,15 @@
-import express from "express"
-import { getDonationAmountUserId, getDonationRecipientIdUserId, getDonationUserId, postDonation } from "../conroller/Donation"
+import express from "express";
+import {
+  getDonationAmountUserId,
+  getDonationRecipientIdUserId,
+  getDonationUserId,
+  postDonation,
+} from "../conroller/Donation";
+import { checkUserId } from "../middleware/Checking";
 
-
-
-
-export  const donationRouter = express.Router()
+export const donationRouter = express.Router();
 donationRouter
-.post("/create", postDonation)
-.get("/received/:userId", getDonationUserId)
-.get("/total-earnings/:userId", getDonationAmountUserId)
-.get("/get/recipient/:userId", getDonationRecipientIdUserId)
+  .get("/received/:userId", checkUserId, getDonationUserId)
+  .get("/total-earnings/:userId", checkUserId, getDonationAmountUserId)
+  .get("/get/recipient/:userId", checkUserId, getDonationRecipientIdUserId)
+  .post("/create", postDonation);
