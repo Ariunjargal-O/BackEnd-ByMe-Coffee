@@ -8,14 +8,48 @@ import sql from "../utils/connection";
 // createdAt timestamp default current_timestamp,
 // updatedAt timestamp default current_timestamp
 
+// export const createUser: RequestHandler = async (
+//   req: Request,
+//   res: Response
+// ) => {
+//   try {
+//     const { username, password, email } = req.body;
 
+//     // Basic validation
+//     if (!username || !password || !email) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Missing username, password, or email",
+//       });
+//     }
 
+//     // Insert into DB
+//     const createdUser = await sql`
+//       INSERT INTO "user" (username, password, email) 
+//       VALUES (${username}, ${password}, ${email})
+//       RETURNING *;
+//     `;
 
-export const createUser: RequestHandler = async (req, res) => {
+//     res.status(201).json({
+//       success: true,
+//       message: "User created successfully",
+//       user: createdUser[0], // returning first user row
+//     });
+//   } catch (error: any) {
+//     res.status(500).json({
+//       success: false,
+//       message: "Failed to create user",
+//       error: error.message,
+//     });
+//   }
+// };
+
+export const createUser: RequestHandler = async ( req: Request,
+  res: Response,) => {
   try {
     const { username, password, email } = req.body;
     const createdUser = await sql`
-         INSERT INTO "user" (username, password, email) 
+         INSERT INTO "user" (username, password, email)
          VALUES (${username}, ${password}, ${email})
          RETURNING *`;
 
@@ -35,7 +69,7 @@ export const createUser: RequestHandler = async (req, res) => {
 
 export const checkUsernameCheck: RequestHandler = async (
   req: Request,
-  res: Response,
+  res: Response
 ) => {
   try {
     const { username } = req.body;
@@ -43,18 +77,12 @@ export const checkUsernameCheck: RequestHandler = async (
           select * from "user" where username = ${username};
         `;
 
-    res.json({exists: !!existingUser})
-   
+    res.json({ exists: !!existingUser });
   } catch (error) {
     console.error("Error checking username:", error);
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };
-
-
-
-
-
 
 export const loginUser = async (req: Request, res: Response) => {
   try {
@@ -70,7 +98,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
 export const getAllUser = async (req: Request, res: Response) => {
   try {
-    const users = await sql`select * from "user"`
+    const users = await sql`select * from "user"`;
     res.status(200).json({ success: true, message: users });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -81,15 +109,14 @@ export const patchUserUserId = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const { username, password, email } = req.body;
-  
+
     const updateUser =
-      await sql`insert into "user" (username, password, email) values (${username}, ${password}, ${email}) `
+      await sql`insert into "user" (username, password, email) values (${username}, ${password}, ${email}) `;
     res.status(200).json({ success: true, message: updateUser });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-
 
 // export const patchUserUserId = async (req: Request, res: Response) => {
 //   try {
