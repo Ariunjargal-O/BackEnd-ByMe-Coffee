@@ -9,11 +9,11 @@ const Profile_1 = require("../conroller/Profile");
 const Checking_1 = require("../middleware/Checking");
 exports.profileRouter = express_1.default.Router();
 exports.profileRouter
-    .post("/create-pro/:userId", Checking_1.checkUserId, Profile_1.postProfileUserId)
-    .patch("/:profileId", Checking_1.checkProfileId, Profile_1.patchProfile)
+    .post("/create-pro/:userId", Profile_1.postProfileUserId)
+    .patch("/update/:profileId", Profile_1.patchProfile)
     .get("/view/:username", Checking_1.checkUsername, Profile_1.getUsername) //ok
-    .post("/", Profile_1.createProfile) //hrggui
-    .get("/", Profile_1.getAllProfile); //ok
-//   .get("/current-user", )
-//   .get("/explore", );
+    .post("/create-pro", Profile_1.createProfile) //hrggui
+    .get("/", Profile_1.getAllProfile) //ok
+    .get("/current-user", Profile_1.getAllProfile)
+    .get("/explore", Profile_1.getAllProfile);
 //# sourceMappingURL=Profile.js.map

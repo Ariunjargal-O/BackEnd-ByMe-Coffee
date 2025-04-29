@@ -29,27 +29,36 @@ exports.createProfile = createProfile;
 const postProfileUserId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.params;
-        const { id, name, about, avatarImage, socialMediaURL, backgroundImage, createdAt, updatedAt, successMessage, } = req.body;
-        const profile = yield (0, connection_1.default) `insert into profile ( id,
-      name,
-      about,
-      avatarImage,
-      socialMediaURL,
-      backgroundImage,
-      createdAt,
-      updatedAt,
-      successMessage,) values (${id}, ${name}, ${about}, ${avatarImage}, ${socialMediaURL},${backgroundImage}, ${userId},${createdAt},${updatedAt}, ${successMessage})
-   `;
-        res.status(200).json({ success: true, message: profile });
+        const { name, about, avatarImage, socialMediaURL, backgroundImage } = req.body;
+        const profile = yield (0, connection_1.default) `
+      INSERT INTO profile (
+        name,
+        about,
+        avatarImage,
+        socialMediaURL,
+        backgroundImage,
+        userid
+      ) VALUES (
+        ${name},
+        ${about},
+        ${avatarImage},
+        ${socialMediaURL},
+        ${backgroundImage},
+        ${userId}
+      )
+      RETURNING *;
+    `;
+        res.status(200).json({ success: true, message: profile[0] });
     }
     catch (error) {
+        console.error("Error inserting profile:", error);
         res.status(500).json({ success: false, message: error.message });
     }
 });
 exports.postProfileUserId = postProfileUserId;
 const getAllProfile = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const profile = yield (0, connection_1.default) `select * from profile `;
+        const profile = yield (0, connection_1.default) `select * from profile left join "user" on profile.userId = user.id where profile.userId = `;
         res.status(200).json({ success: true, message: profile });
     }
     catch (error) {
@@ -60,7 +69,7 @@ exports.getAllProfile = getAllProfile;
 const getUsername = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { username } = req.params;
-        const profile = yield (0, connection_1.default) `select * from profile where "username" = ${username}
+        const profile = yield (0, connection_1.default) `select * from "user" where username = ${username}
    `;
         res.status(200).json({ success: true, message: profile });
     }
@@ -72,7 +81,7 @@ exports.getUsername = getUsername;
 const patchProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { profileId } = req.params;
-        const updateProfile = yield (0, connection_1.default) `update profile set name = ${req.body.name}, about = ${req.body.about}, avatarImage = ${req.body.avatarImage}, socialMediaURL = ${req.body.socialMediaURL}, backgroundImage = ${req.body.backgroundImage}, userId = ${req.body.userId} where id = ${profileId} returning *`;
+        const updateProfile = yield (0, connection_1.default) `update profile set name = ${req.body.name}, about = ${req.body.about}, avatarImage = ${req.body.avatarImage}, socialMediaURL = ${req.body.socialMediaURL}, backgroundImage = ${req.body.backgroundImage} where id = ${profileId} returning *`;
         res.status(200).json({ success: true, message: updateProfile });
     }
     catch (error) {

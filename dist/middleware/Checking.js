@@ -14,18 +14,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkBankCardId = exports.checkProfileId = exports.checkUserId = exports.checkUsername = void 0;
 const connection_1 = __importDefault(require("../utils/connection"));
-const checkUsername = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const checkUsername = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { username } = req.body;
-        const existingUser = yield (0, connection_1.default) `
+        const { username } = req.params;
+        const [existingUser] = yield (0, connection_1.default) `
         select * from "user" where username = ${username};
       `;
-        if (existingUser.length > 0) {
-            res.json({ exists: true });
-        }
-        else {
-            res.json({ exists: false });
-        }
+        if (!existingUser)
+            res.status(404).send("not found");
+        next();
     }
     catch (error) {
         console.error("Error checking username:", error);
@@ -33,10 +30,10 @@ const checkUsername = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.checkUsername = checkUsername;
-const checkUserId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const checkUserId = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { userId } = req.body;
-        const existingUser = yield (0, connection_1.default) ` select * from "user" where userId = ${userId}`;
+        const { userId } = req.params;
+        const existingUser = yield (0, connection_1.default) ` select * from "user" where id = ${userId}`;
         if (existingUser.length > 0) {
             res.json({ exists: true });
         }
@@ -49,9 +46,9 @@ const checkUserId = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.checkUserId = checkUserId;
-const checkProfileId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const checkProfileId = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { profileId } = req.body;
+        const { profileId } = req.params;
         const existingUser = yield (0, connection_1.default) ` select * from profile where profileId = ${profileId}`;
         if (existingUser.length > 0) {
             res.json({ exists: true });
@@ -65,9 +62,9 @@ const checkProfileId = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.checkProfileId = checkProfileId;
-const checkBankCardId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const checkBankCardId = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { bankCardId } = req.body;
+        const { bankCardId } = req.params;
         const existingUser = yield (0, connection_1.default) ` select * from "BankCard" where bankCardId = ${bankCardId}`;
         if (existingUser.length > 0) {
             res.json({ exists: true });

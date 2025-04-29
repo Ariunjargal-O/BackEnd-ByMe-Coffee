@@ -59,8 +59,9 @@ export const postProfileUserId = async (req: Request, res: Response) => {
 
 export const getAllProfile = async (_req: Request, res: Response) => {
   try {
-    const profile =
-      await sql`select * from profile left join "user" on profile.userId = user.id where profile.userId = `;
+
+    const profile = await sql`select * from profile `;
+      // await sql`select * from profile left join "user" on profile.userId = user.id where profile.userId = `;
     res.status(200).json({ success: true, message: profile });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
