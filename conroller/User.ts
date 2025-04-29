@@ -1,5 +1,7 @@
 import { Request, RequestHandler, Response } from "express";
 import sql from "../utils/connection";
+import { jwtDecode } from "jwt-decode";
+import jwt from "jsonwebtoken";
 // id serial primary key,
 // email varchar(100) not null unique,
 // password varchar(100) not null,
@@ -8,44 +10,10 @@ import sql from "../utils/connection";
 // createdAt timestamp default current_timestamp,
 // updatedAt timestamp default current_timestamp
 
-// export const createUser: RequestHandler = async (
-//   req: Request,
-//   res: Response
-// ) => {
-//   try {
-//     const { username, password, email } = req.body;
-
-//     // Basic validation
-//     if (!username || !password || !email) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Missing username, password, or email",
-//       });
-//     }
-
-//     // Insert into DB
-//     const createdUser = await sql`
-//       INSERT INTO "user" (username, password, email) 
-//       VALUES (${username}, ${password}, ${email})
-//       RETURNING *;
-//     `;
-
-//     res.status(201).json({
-//       success: true,
-//       message: "User created successfully",
-//       user: createdUser[0], // returning first user row
-//     });
-//   } catch (error: any) {
-//     res.status(500).json({
-//       success: false,
-//       message: "Failed to create user",
-//       error: error.message,
-//     });
-//   }
-// };
-
-export const createUser: RequestHandler = async ( req: Request,
-  res: Response,) => {
+export const createUser: RequestHandler = async (
+  req: Request,
+  res: Response
+) => {
   try {
     const { username, password, email } = req.body;
     const createdUser = await sql`
@@ -86,11 +54,30 @@ export const checkUsernameCheck: RequestHandler = async (
 
 export const loginUser = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
-    const user =
+    const {id, email, password } = req.body;
+    const [user] =
       await sql`select * from "user" where email = ${email} and password = ${password}
-    returning *`;
-    res.status(200).json({ success: true, message: user });
+`;
+
+    // const token = jwt.sign({ user }, process.env.ACCESS_SECRET_KEY, {
+    //   expiresIn: "1h",
+    // });
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.ACCESS_SECRET_KEY as string,
+      { expiresIn: "1h" }
+    );
+
+    res.status(200).json({
+      success: true,
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+      },
+      },
+    );
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

@@ -14,8 +14,8 @@ import {
 
 export const profileRouter = express.Router();
 profileRouter
-  .post("/create-pro/:userId", checkUserId, postProfileUserId)
-  .patch("/update/:profileId", checkProfileId, patchProfile)
+  .post("/create-pro/:userId",  postProfileUserId)
+  .patch("/update/:profileId", patchProfile)
   .get("/view/:username", checkUsername, getUsername) //ok
   .post("/create-pro", createProfile) //hrggui
   .get("/", getAllProfile) //ok

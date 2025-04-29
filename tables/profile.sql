@@ -6,10 +6,8 @@ create table
         avatarImage varchar(100) not null,
         socialMediaURL varchar(100) not null,
         backgroundImage varchar(100) not null,
-        successMessage varchar(100) not null,
-        userId integer "user"(id),
-        createdAt timestamp default current_timestamp,
-        updatedAt timestamp default current_timestamp
+        userId integer references "user"(id),
+
     )
 
 

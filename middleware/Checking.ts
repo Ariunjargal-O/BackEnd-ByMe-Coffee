@@ -30,7 +30,7 @@ export const checkUserId: RequestHandler = async (
   try {
     const { userId } = req.params;
     const existingUser =
-      await sql` select * from "user" where userId = ${userId}`;
+      await sql` select * from "user" where id = ${userId}`;
     if (existingUser.length > 0) {
       res.json({ exists: true });
     } else {
