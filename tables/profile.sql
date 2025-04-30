@@ -1,25 +1,10 @@
-create table
-   " profile" (
-        id serial primary key,
-        name varchar(100) not null,
-        about varchar(100) not null,
-        avatarImage varchar(100) not null,
-        socialMediaURL varchar(100) not null,
-        backgroundImage varchar(100) not null,
-        userId integer references "user"(id),
 
-    )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+CREATE TABLE "profile" (
+    id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+            about VARCHAR(100) NOT NULL,
+                avatarImage VARCHAR(100) NOT NULL,
+                    socialMediaURL VARCHAR(100) NOT NULL,
+                        backgroundImage VARCHAR(100) NOT NULL,
+                            userId INTEGER REFERENCES users(id)
+                            )

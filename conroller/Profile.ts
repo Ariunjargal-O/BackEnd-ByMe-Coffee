@@ -57,6 +57,21 @@ export const postProfileUserId = async (req: Request, res: Response) => {
   }
 };
 
+export const getProfileUserId = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+
+    const profile = await sql`
+      SELECT * FROM profile WHERE "userid" = ${userId}
+    `;
+
+    res.status(200).json({ success: true, message: profile[0] });
+  } catch (error: any) {
+    console.error("Database error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 export const getAllProfile = async (_req: Request, res: Response) => {
   try {
 

@@ -2,6 +2,7 @@ import express from "express";
 import {
   createProfile,
   getAllProfile,
+  getProfileUserId,
   getUsername,
   patchProfile,
   postProfileUserId,
@@ -14,6 +15,7 @@ import {
 
 export const profileRouter = express.Router();
 profileRouter
+.get("/:userId",getProfileUserId ) //  
   .post("/create-pro/:userId",  postProfileUserId)
   .patch("/update/:profileId", patchProfile)
   .get("/view/:username", checkUsername, getUsername) //ok

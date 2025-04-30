@@ -29,6 +29,7 @@ export const createUser: RequestHandler = async (
     // console.error("Error creating user:", error);
     res.status(500).json({
       success: false,
+      
       message: "Failed to create user",
       error: error.message,
     });
@@ -60,7 +61,7 @@ export const loginUser = async (req, res) => {
 
     // Only check email — do NOT check password in SQL
     const result = await sql`
-      SELECT id, email, password FROM "user" 
+      SELECT id, username, email, password FROM "user" 
       WHERE email = ${email}
     `;
 
@@ -86,6 +87,7 @@ export const loginUser = async (req, res) => {
     res.status(200).json({
       success: true,
       userId: user.id,
+      username: user.username,
       message: 'Login successful!',
     });
 
