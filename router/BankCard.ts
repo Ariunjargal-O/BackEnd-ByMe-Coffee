@@ -2,7 +2,6 @@ import express from "express";
 import {
   getBankCardUserId,
   patchBankCard,
-  postBankCard,
   postBankCardUserId,
 } from "../conroller/BankCard";
 import { checkBankCardId, checkUserId } from "../middleware/Checking";

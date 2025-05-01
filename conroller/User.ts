@@ -21,15 +21,20 @@ export const createUser: RequestHandler = async (
          VALUES (${username}, ${password}, ${email})
          RETURNING *`;
 
+    const user = createUser[0];
+
     res.status(201).json({
       success: true,
       message: createdUser,
+      userId: user.id,
+      user: {
+        username: user.username,
+        email: user.email,
+      },
     });
   } catch (error) {
-    // console.error("Error creating user:", error);
     res.status(500).json({
       success: false,
-      
       message: "Failed to create user",
       error: error.message,
     });
@@ -53,8 +58,6 @@ export const checkUsernameCheck: RequestHandler = async (
   }
 };
 
-
-
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -71,7 +74,7 @@ export const loginUser = async (req, res) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid email or password.',
+        message: "Invalid email or password.",
       });
     }
 
@@ -79,7 +82,7 @@ export const loginUser = async (req, res) => {
     if (user.password !== password) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid email or password.',
+        message: "Invalid email or password.",
       });
     }
 
@@ -88,20 +91,16 @@ export const loginUser = async (req, res) => {
       success: true,
       userId: user.id,
       username: user.username,
-      message: 'Login successful!',
+      message: "Login successful!",
     });
-
   } catch (error) {
-    console.error('Login error:', error);
+    console.error("Login error:", error);
     res.status(500).json({
       success: false,
-      message: 'Server error during login.',
+      message: "Server error during login.",
     });
   }
 };
-
-
-
 
 // export const loginUser = async (req: Request, res: Response) => {
 //   try {

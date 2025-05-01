@@ -1,12 +1,12 @@
-import sql from "../utils/connection";
 import { Request, Response } from "express";
+import sql from "../utils/connection";
 
-export const postBankCard = async (req: Request, res: Response) => {
+export const createBankCard = async (req: Request, res: Response) => {
   try {
-    const { cardNumber, cardHolderName, expirationDate, cvv, userId } =
+    const { id, country, firstName, lastName, cardNumber, expiryDate } =
       req.body;
     const createdBankCard =
-      await sql`insert into "bankCard" (cardNumber, cardHolderName, expirationDate, cvv, userId) values (${cardNumber}, ${cardHolderName}, ${expirationDate}, ${cvv}, ${userId})
+      await sql`insert into bankCard (id, country, firstName, lastName, cardNumber, expiryDate) values (${id}, ${country}, ${firstName}, ${lastName}, ${cardNumber}, ${expiryDate},)
             returning *`;
     res.status(201).json({ success: true, message: createdBankCard });
   } catch (error) {
@@ -17,8 +17,26 @@ export const postBankCard = async (req: Request, res: Response) => {
 export const postBankCardUserId = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const bankCard = await sql`insert into "bankCard" where userId = ${userId}
-        returning *`;
+    const { country, firstName, lastName, cardNumber, expiryDate } = req.body;
+    const bankCard = await sql`
+    INSERT INTO "bankCard" (
+        country,
+        firstName,
+        lastName,
+        cardNumber,
+        expiryDate,
+        userid
+      ) VALUES (
+        ${country},
+        ${firstName},
+        ${lastName},
+        ${cardNumber},
+        ${expiryDate},
+        ${userId}
+      )
+      RETURNING *;
+    `;
+
     res.status(200).json({ success: true, message: bankCard });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -28,21 +46,32 @@ export const postBankCardUserId = async (req: Request, res: Response) => {
 export const getBankCardUserId = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const bankCard = await sql`select * from "bankCard" where userId = ${userId}
-            `;
+    const bankCard = await sql`
+      SELECT * FROM "bankCard" WHERE userid = ${userId}
+    `;
     res.status(200).json({ success: true, message: bankCard });
   } catch (error) {
-    res.status(201).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
 export const patchBankCard = async (req: Request, res: Response) => {
   try {
     const { bankCardId } = req.params;
-    const { cardNumber, cardHolderName, expirationDate, cvv } = req.body;
-    const bankCard =
-      await sql`update "bankCard" set cardNumber = ${cardNumber}, cardHolderName = ${cardHolderName}, expirationDate = ${expirationDate}, cvv = ${cvv} where id = ${bankCardId}
-        returning *`;
+    const { cardNumber, country, firstName, lastName, expiryDate } = req.body;
+
+    const bankCard = await sql`
+      UPDATE "bankCard"
+      SET 
+        card_number = ${cardNumber},
+        expiry_date = ${expiryDate},
+        country = ${country},
+        first_name = ${firstName},
+        last_name = ${lastName}
+      WHERE id = ${bankCardId}
+      RETURNING *;
+    `;
+
     res.status(200).json({ success: true, message: bankCard });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
