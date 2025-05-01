@@ -9,7 +9,7 @@ import { checkUserId } from "../middleware/Checking";
 
 export const donationRouter = express.Router();
 donationRouter
-  .get("/received/:userId", checkUserId, getDonationUserId)
-  .get("/total-earnings/:userId", checkUserId, getDonationAmountUserId)
-  .get("/get/recipient/:userId", checkUserId, getDonationRecipientIdUserId)
+  .get("/received/:userId", getDonationUserId)
+  .get("/total-earnings/:userId", getDonationAmountUserId)
+  .get("/get/recipient/:userId", getDonationRecipientIdUserId)
   .post("/create", postDonation);

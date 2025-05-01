@@ -17,8 +17,9 @@ export const postDonation = async (req: Request, res: Response) => {
       recipientId: number;
     };
     const createdDonation =
-      await sql`insert into from donution (amount, specialMessage, socialURLOrBuyMeACoffee, donorId, recipientId) values (${amount}, ${specialMessage}, ${socialURLOrBuyMeACoffee}, ${donorId}, ${recipientId})
-      ruturning *`;
+      await sql`INSERT INTO donation (amount, specialMessage, socialURLOrBuyMeACoffee, donorId, recipientId) 
+      VALUES (${amount}, ${specialMessage}, ${socialURLOrBuyMeACoffee}, ${donorId}, ${recipientId})
+      RETURNING *`;
       res.status(201).json({ success: true, message: createdDonation });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -28,7 +29,7 @@ export const postDonation = async (req: Request, res: Response) => {
 export const getDonationUserId = async (req: Request, res: Response) => {
     try{
         const { userId } = req.params;
-        const donation = await sql`select * from donation where donorId = ${userId}
+        const donation = await sql`select * from "user" where donorId = ${userId}
         returning *`;
         res.status(200).json({ success: true, message: donation });
     }catch (error) {
@@ -39,9 +40,9 @@ export const getDonationUserId = async (req: Request, res: Response) => {
 export const getDonationAmountUserId = async (req:Request, res:Response) => {
     try{
         const { userId } = req.params;
-        const donation = await sql`select sum(amount) from donation where donorId = ${userId}
-        returning *`;
-        res.status(200).json({ success: true, message: donation }); 
+        const donation = await sql`select * from donation where donorid = ${userId}
+        `;
+        res.status(200).json({ success: true, message: donation[0] }); 
     }catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
