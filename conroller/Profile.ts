@@ -28,8 +28,9 @@ export const createProfile = async (req: Request, res: Response) => {
 export const postProfileUserId = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const { name, about, avatarImage, socialMediaURL, backgroundImage } =
-      req.body;
+    console.log(req.body);
+
+    const { name, about, avatarImage, socialMediaUrl } = req.body;
 
     const profile = await sql`
       INSERT INTO profile (
@@ -37,14 +38,12 @@ export const postProfileUserId = async (req: Request, res: Response) => {
         about,
         avatarImage,
         socialMediaURL,
-        backgroundImage,
         userid
       ) VALUES (
         ${name},
         ${about},
         ${avatarImage},
-        ${socialMediaURL},
-        ${backgroundImage},
+        ${socialMediaUrl},
         ${userId}
       )
       RETURNING *;
@@ -74,9 +73,8 @@ export const getProfileUserId = async (req: Request, res: Response) => {
 
 export const getAllProfile = async (_req: Request, res: Response) => {
   try {
-
     const profile = await sql`select * from profile `;
-      // await sql`select * from profile left join "user" on profile.userId = user.id where profile.userId = `;
+    // await sql`select * from profile left join "user" on profile.userId = user.id where profile.userId = `;
     res.status(200).json({ success: true, message: profile });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });

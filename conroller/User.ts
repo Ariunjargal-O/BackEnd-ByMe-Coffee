@@ -29,7 +29,6 @@ export const createUser: RequestHandler = async (
       userId: user.id,
       user: {
         username: user.username,
-        email: user.email,
       },
     });
   } catch (error) {
